@@ -15,6 +15,8 @@ bucket = connection.get_bucket('vikinggame-logs')
 my_id = socket.gethostbyname(socket.gethostname())
 now = str(datetime.datetime.utcnow())
 
+cores_to_save = []
+
 for d, dirs, files in os.walk('/opt/vikinggameserver/logs/'): #   development/port/log
     log = []
     core = []
@@ -34,9 +36,18 @@ for d, dirs, files in os.walk('/opt/vikinggameserver/logs/'): #   development/po
     for log_i in xrange(len(log)):
         logkeyname = posixpath.join('logs', branch, core_switch, now, my_id, port, 'log-{}'.format(log_i))
         logkey = bucket.new_key(logkeyname)
+        logkey.close()
         logkey.set_contents_from_filename(os.path.join(d, log[log_i]))
 
     for core_i in xrange(len(core)):
         corekeyname = posixpath.join('logs', branch, core_switch, now, my_id, port, 'core-{}'.format(core_i))
         corekey = bucket.new_key(corekeyname)
-        corekey.set_contents_from_filename(os.path.join(d, core[core_i]))
+        # Save all cores at the end
+        cores_to_save.append((corekey, os.path.join(d, core[core_i])))
+        corekey.set_contents_from_string("<pending>")
+        corekey.close()
+        #corekey.set_contents_from_filename(os.path.join(d, core[core_i]))
+
+for key, filename in cores_to_save:
+    corekey = bucket.get_key(key)
+    corekey.set_contents_from_filename(filename)
