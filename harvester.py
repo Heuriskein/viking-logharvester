@@ -94,6 +94,10 @@ def upload_list(l):
     return l
 
 def check_stillrunning(port):
+    # Ignore this check for now. VikingGameServer doesn't shut down in a reasonable period of time
+    # when the service is aborted, so it'll never upload if we do this
+    return False
+
     pids = [pid for pid in os.listdir('/proc') if pid.isdigit()]
     for pid in pids:
         try:
@@ -111,5 +115,7 @@ if __name__ == '__main__':
     logs_to_save, cores_to_save = gather_files()
     while len(logs_to_save) > 0:
         logs_to_save = upload_list(logs_to_save)
+        time.sleep(.1)
     while len(cores_to_save) > 0:
         cores_to_save = upload_list(cores_to_save)
+        time.sleep(.1)
