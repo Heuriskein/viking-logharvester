@@ -64,7 +64,7 @@ def gather_files():
 
             cores_to_save.append({
                 'keyname': corekeyname,
-                'filename': os.path.join(d, log[log_i]),
+                'filename': os.path.join(d, core[core_i]),
                 'branch': branch,
                 'port': port,
                 }
