@@ -39,7 +39,7 @@ def gather_files():
             core_switch = 'crash'
 
         for log_i in xrange(len(log)):
-            logkeyname = posixpath.join('logs', branch, core_switch, now, my_id, port, 'log-{}'.format(log_i))
+            logkeyname = posixpath.join('logs', branch, core_switch, now, my_id, port, 'log-{}.txt'.format(log_i))
             logkey = bucket.new_key(logkeyname)
             logkey.set_contents_from_string("<pending>")
             logkey.close()
@@ -55,7 +55,7 @@ def gather_files():
             #logkey.set_contents_from_filename(os.path.join(d, log[log_i]))
 
         for core_i in xrange(len(core)):
-            corekeyname = posixpath.join('logs', branch, core_switch, now, my_id, port, 'core-{}'.format(core_i))
+            corekeyname = posixpath.join('logs', branch, core_switch, now, my_id, port, 'core-{}.core'.format(core_i))
             corekey = bucket.new_key(corekeyname)
             # Save all cores at the end
             corekey.set_contents_from_string("<pending>")
